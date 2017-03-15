@@ -17,6 +17,7 @@
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-react": "^6.22.0",
     "babel-preset-stage-0": "^6.22.0",
+    "bower": "^1.8.0",
     "classnames": "^2.2.5",
     "css-loader": "^0.26.1",
     "loaders.css": "^0.1.2",
