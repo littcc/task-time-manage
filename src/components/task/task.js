@@ -144,7 +144,7 @@ let task = new TaskStore();
                 </section>
         } else if (task.steps === 1) {
             let selected = task.selected;
-            
+
             panel = <section className="task-panel-continue" onClick={this.preventDefault}>
                         <div className="task-panel-continue-title"></div>
                         <div className="task-panel-continue-info">
@@ -302,15 +302,14 @@ let task = new TaskStore();
             task.resetState();
         }, 500);
     }
-    
+
     changeTask() {
         if (this.refs.taskEstimateTime.value === '0' || !utils.isTime(this.refs.taskEstimateTime.value) || !this.refs.taskProjectName.value.trim()) {
             alert('预计用时&所属项目 - 格式错误');
             return false;
         }
 
-        let params = {},
-            item = task.selected;
+        let params = _.assign({}, task.selected);
 
         // params.title = item.title;
         params.estimateTime = utils.timeFormatTranslate.hTos(this.refs.taskEstimateTime.value.trim());
@@ -321,7 +320,7 @@ let task = new TaskStore();
         params.remarks = this.refs.taskRemarks.value.trim();
         params.timeout = params.actualTime - params.estimateTime;
 
-
+        console.log(params)
         task.update(params);
 
     }
@@ -492,7 +491,8 @@ let task = new TaskStore();
         task.panel = true;
         task.steps = 3;
         task.state = item.state;
-        
+        console.log(task.selected)
+
     }
 
 }

@@ -40,8 +40,8 @@ const Utils = {
      * @param  {[sting]} time 传入一个规定的时间标示 1h20m || 1h || 2m || 1
      * @return {boolean} 返回一个布尔
      */
-    isTime:(time)=> {
-        return /(^\d+[hm]?){1}(\d+[m]{1})?$/i.test(time.trim());
+    isTime: (time) => {
+        return /(^\d+.{0,1}\d{0,2}[hm]?){1}(\d+[m]{1})?$/i.test(time.trim());
     },
     /**
      * [description] 时间转换
@@ -83,13 +83,14 @@ const Utils = {
                 if (time[1] === '') {
                     seconds = time[0] * Utils.hours;
                 } else {
-                    seconds = (time[0] + Utils.decimalAdjust('round', time[1] / Utils.minutes, -2)) * Utils.hours;
+                    seconds = (time[0] * Utils.hours) + (parseInt(time[1]) * Utils.minutes);
                 }
                 return parseInt(seconds);
             }
 
             if (hours.indexOf('m') !== -1) {
-                seconds = hours.split('m')[0] * Utils.minutes;
+                // seconds = hours.split('m')[0] * Utils.minutes;
+                seconds = parseInt(hours) * Utils.minutes;
             } else {
                 seconds = hours * Utils.hours;
             }
@@ -113,7 +114,7 @@ const Utils = {
      * @param  {number} value 数字
      * @param  {number} exp 保留小数几位 可以为负数,负数则为小数位数
      */
-    decimalAdjust: function (type, value, exp) {
+    decimalAdjust: function(type, value, exp) {
         // If the exp is undefined or zero...
         if (typeof exp === 'undefined' || +exp === 0) {
             return Math[type](value);
