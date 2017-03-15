@@ -1,0 +1,548 @@
+@import '../../base/common.scss';
+html {
+    height: 100vh;
+    overflow-x: hidden;
+}
+
+// body {
+// display: flex;
+// flex-direction: column;
+// padding: 50px 0;
+// height: 100vh;
+// background: $blue;
+// }
+#task-table {
+    flex: 1 0 auto;
+    padding-top: 100px;
+}
+
+#app-task {
+    display: flex;
+    flex-direction: column;
+    // padding: 50px 0;
+    background: $blue;
+    >div {
+        padding: 50px 0;
+        min-height: 100vh;
+    }
+}
+
+.task-header {
+    flex: none;
+    width: 100vw;
+    height: 44px;
+    text-align: center;
+    // background: $lightBlue;
+    .task-header-wrap {
+        margin: 0 auto;
+        width: $width;
+        height: 44px;
+        line-height: 44px;
+        color: $light;
+        font-size: 20px;
+        .ver {
+            margin-left: 5px;
+            font-size: 12px;
+        }
+    }
+}
+
+.task-fliter {
+    flex: none;
+    width: 100vw;
+    height: 100px;
+}
+
+.task-add-task {
+    position: absolute;
+    right: 0;
+    top: -10px;
+    width: 80px;
+    line-height: 3;
+    border-radius: 2px;
+    font-weight: bold;
+    transform: translate(0, -100%);
+    @extend %green-button;
+    box-shadow: 0 0 3px 0px rgba(6, 74, 169, 0.5);
+    &:after {
+        content: '添加任务';
+    }
+}
+
+.table-main {
+    flex: 1 0 auto;
+    position: relative;
+    margin: 0 auto;
+    margin-top: 100px;
+    width: $width;
+    border-radius: 5px;
+    background: #FFF;
+    box-shadow: 0 0 5px 0px rgba(6, 74, 169, 0.5);
+}
+
+%listItem {
+    position: relative;
+    flex: 0 0 100px;
+    list-style: none;
+    text-align: center;
+    line-height: $line-height;
+    &:first-child {
+        flex: 6 1 auto;
+        @extend %text-overflow;
+    }
+}
+
+%itemIcon {
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    line-height: 2;
+    padding: 0 5px;
+    font-style: normal;
+    text-align: center;
+    border-radius: 2px;
+    color: #FFF;
+    transform: translate(0, -50%) scale(0.834);
+}
+
+.task-main-table-head {
+    display: flex;
+    width: $width;
+    border-bottom: 1px solid $border-color;
+    >li {
+        @extend %listItem;
+    }
+}
+
+// .task-main-table-content {}
+.task-main-table-content-item {
+    &:not(:last-child) {
+        border-bottom: 1px solid $border-color;
+    }
+    .item-ul {
+        position: relative;
+        display: flex;
+        &:hover {
+            .item-event-mask {
+                display: flex;
+                opacity: 1;
+                transition: all .3s cubic-bezier(.59, 0.58, 0.57, 1);
+                z-index: 2;
+            }
+        }
+    }
+    .item-event-mask {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 10px;
+        opacity: 0;
+        background: rgba(76, 82, 84, 0.7);
+        z-index: -1;
+        transition: all 0.3s cubic-bezier(0.39, 0.58, 0.57, 1);
+    }
+    .item-event-button {
+        margin: 0 10px;
+        padding: 0 10px;
+        line-height: 2;
+        color: $light;
+        border-radius: 2px;
+        cursor: pointer;
+        &.delete-button {
+            background: #ff4351;
+        }
+        &.change-button {
+            background:#ffc107;
+        }
+        &.view-button {
+            background: #1fc759;
+        }
+    }
+    .item-li {
+        @extend %listItem;
+        transition: background .3s;
+        &:first-child {
+            text-align: left;
+            padding-left: 70px;
+            &:before {
+                content: '开发任务';
+                @extend %itemIcon;
+                background: $green;
+            }
+        }
+        &:hover {
+            background: $border-color;
+            transition: background .3s;
+        }
+        &.item-li-time {
+            letter-spacing: 0.07em;
+        }
+        .task-state {
+            padding: 2px;
+            border-radius: 2px;
+            border-width: 1px;
+            border-style: solid;
+        }
+        .tsak-state-not-started {
+            color: $bug-color;
+            border-color: $bug-color;
+        }
+        .tsak-state-ongoing {
+            color: $orange;
+            border-color: $orange;
+        }
+        .tsak-state-done {
+            color: $green;
+            border-color: $green;
+        }
+    }
+    .item-bug {
+        >.item-ul {
+            background: #f3faff;
+        }
+        li {
+            &:first-child {
+                position: relative;
+                text-align: left;
+                padding-left: 70px;
+                &:before {
+                    content: '修复缺陷';
+                    @extend %itemIcon;
+                    background: $bug-color;
+                }
+            }
+            border-bottom:1px solid $light;
+        }
+    }
+    &.type-bug {
+        .item-li {
+            &:first-child {
+                &:before {
+                    content: '修复缺陷';
+                    background: $bug-color;
+                }
+            }
+        }
+    }
+}
+
+.task-loading {
+    position: fixed;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    background: $blue;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity .3s ease-in;
+    &.active {
+        z-index: 9;
+        opacity: 1;
+        transition: opacity .3s ease-in;
+    }
+}
+
+.task-footer {
+    position: fixed;
+    bottom: 0;
+    flex: none;
+    width: 100vw;
+    height: 44px;
+    text-align: center;
+    .task-footer-wrap {
+        >a {
+            display: inline-block;
+            color: $light;
+            text-decoration: none;
+        }
+        margin: 0 auto;
+        width: $width;
+        line-height: 44px;
+        font-size: 12px;
+    }
+}
+
+.task-panel-mask {
+    position: fixed;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+    height: calc(100vh - 44px);
+    background: $blue;
+    opacity: 0;
+    transform: translate3d(0, -100vh, 0);
+    transition: all 0.3s cubic-bezier(1, 0.01, 1, 1);
+    >div {
+        display: flex;
+        align-self: center;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+    &.active {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+        transition: all 0.3s cubic-bezier(0.06, 0.59, 0.53, 0.71);
+    }
+    .task-panel-close {
+        // display: inline
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 20px;
+        height: 20px;
+        background: red;
+    }
+}
+
+.task-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 150px;
+    width: 500px;
+    height: 40px;
+    border-radius: 5px;
+    background: #FFF;
+    box-shadow: 0 0 5px 0px rgba(6, 74, 169, 0.5);
+    >label {
+        position: relative;
+        width: 100%;
+        text-align: center;
+    }
+    input {
+        padding: 0 15px;
+        padding-right: 115px;
+        width: 100%;
+        line-height: 40px;
+        font-size: 12px;
+        color: $font-color;
+        text-align: left;
+        background: #FCFEFF;
+        border-radius: 2px;
+        transition: all .3s ease-out;
+        &:focus {
+            transition: all .3s ease-in;
+        }
+        &::-webkit-input-placeholder {
+            color: #C1C1C2;
+        }
+    }
+    .task-fliter-items {
+        position: absolute;
+        width: 100%;
+        margin-top: 10px;
+        border-radius: 2px;
+        background: $light;
+        overflow: hidden;
+        box-shadow: 0 0 5px 0px rgba(6, 74, 169, 0.5);
+    }
+    .task-fliter-item {
+        position: relative;
+        padding: 10px 15px 12px 65px;
+        text-align: left;
+        cursor: pointer;
+        transition: all .2s ease-out;
+        >span {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+            line-height: 1.5;
+        }
+        &:not(:last-child) {
+            border-bottom: 1px solid $border-color;
+        }
+        &:nth-child(n+11) {
+            display: none;
+        }
+        &:hover {
+            background: $border-color;
+            transition: all .2s ease-in;
+        }
+        &:before {
+            content: '开发任务';
+            background: $green;
+            @extend %itemIcon;
+        }
+        &.type-bug {
+            &:before {
+                content: '修复缺陷';
+                background: $bug-color;
+            }
+        }
+    }
+}
+
+.task-next {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 40px;
+    text-align: center;
+    color: $light;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    font-weight: bold;
+    @extend %green-button;
+    &.task-continue {
+        @extend %red-button;
+        &:after {
+            content: '继续任务';
+        }
+    }
+    &:after {
+        content: '新任务';
+    }
+}
+
+.task-panel-continue {
+    display: flex;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 500px;
+    height: 300px;
+    background: $light;
+    border-radius: 5px;
+    box-shadow: 0 0 5px 0px rgba(6, 74, 169, 0.5);
+    .task-panel-continue-title {
+        width: 100%;
+        padding: 0 50px;
+        line-height: 40px;
+        margin-bottom: 20px;
+        @extend %text-overflow;
+    }
+    .task-panel-continue-info {
+        display: flex;
+        margin-bottom: 10px;
+        width: 75%;
+    }
+    .task-panel-continue-info-input {
+        display: flex;
+        // padding: 0 15px;
+        flex: 1;
+        line-height: 40px;
+        font-size: 12px;
+        color: $font-color;
+        text-align: center;
+        background: $light;
+        border-radius: 2px;
+        border: 1px solid $border-color;
+        transition: all .3s ease-out;
+        &:nth-child(1) {
+            &~input {
+                margin-left: 10px;
+            }
+        }
+        &:focus {
+            border: 1px solid $blue;
+            transition: all .3s ease-in;
+        }
+        &::-webkit-input-placeholder {
+            color: #C1C1C2;
+        }
+    }
+    .task-panel-continue-info-state {
+        display: flex;
+        flex: 1;
+        // padding: 0 15px;
+        line-height: 40px;
+        font-size: 12px;
+        color: $light;
+        text-align: center;
+        border-radius: 2px;
+        -webkit-appearance: button;
+        cursor: pointer;
+        &:after {
+            content: '进行中';
+            flex: 1;
+            background: $orange;
+            transition: background .3s ease;
+        }
+        &:checked {
+            &:after {
+                content: '已完成';
+                flex: 1;
+                background: $green;
+                transition: background .3s ease;
+            }
+        }
+        &.task-panel-continue-info-type {
+            &:after {
+                content: '开发任务';
+                flex: 1;
+                background: $green;
+            }
+            &:checked {
+                &:after {
+                    content: '修复缺陷';
+                    flex: 1;
+                    background: $bug-color;
+                }
+            }
+        }
+        &.hide {
+            display: none;
+        }
+    }
+    .task-panel-continue-submit {
+        padding-top: 10px;
+        >button {
+            width: 100px;
+            height: 40px;
+            border-radius: 2px;
+            &:nth-child(1) {
+                &~button {
+                    margin-left: 20px;
+                }
+            }
+        }
+    }
+    .task-panel-cancel {
+        background: #eee;
+        &:after {
+            display: inline-block;
+            content: '取消';
+        }
+    }
+    .task-panel-enter {
+        color: #fff;
+        background: $blue;
+        &:after {
+            display: inline-block;
+            content: '确认';
+        }
+    }
+}
+
+.task-filter {
+    position: absolute;
+    left: 0;
+    top: -10px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: 36px;
+    line-height: 3;
+    transform: translate(0, -100%);
+    .task-filter-item {
+        padding: 0 10px;
+        line-height: 2;
+        color: $blue;
+        border-radius: 2px;
+        background: $light-blue;
+    }
+}
