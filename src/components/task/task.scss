@@ -124,7 +124,6 @@ html {
         display: flex;
         &:hover {
             .item-event-mask {
-                display: flex;
                 opacity: 1;
                 transition: all .3s cubic-bezier(.59, 0.58, 0.57, 1);
                 z-index: 2;
@@ -132,6 +131,7 @@ html {
         }
     }
     .item-event-mask {
+        display: flex;
         position: absolute;
         top: 0;
         bottom: 0;
