@@ -11,8 +11,11 @@ const config = {
                 loader: 'babel-loader',
                 options: {
                     presets: ['es2015', 'stage-0', 'react'],
-                    plugins: ['transform-decorators-legacy'],
-                },
+                    plugins: ['transform-decorators-legacy', 'transform-object-assign', 'transform-object-rest-spread', ['import', {
+                        "libraryName": "antd",
+                        "style": true,   // or 'css'
+                    }]],
+            },
             }],
         }, {
             test: /\.scss$/,
@@ -29,7 +32,22 @@ const config = {
                     sourceMap: true
                 }
             }]
-        }],
+            }, {
+                test: /\.less$/,
+                use: [{
+                    loader: 'style-loader'
+                }, {
+                    loader: 'css-loader',
+                    options: {
+                        sourceMap: true
+                    }
+                }, {
+                    loader: 'less-loader',
+                    options: {
+                        sourceMap: true
+                    }
+                }]
+            }],
     },
     entry: {
         app: './app.js',
@@ -47,6 +65,7 @@ const config = {
         host: '0.0.0.0',
         port: 8088,
     },
+    plugins: [new webpack.ProvidePlugin({ReactSlick: 'react-slick' })]
 };
 
 module.exports = config;

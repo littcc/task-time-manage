@@ -1,5 +1,7 @@
 import { observable, computed, action } from 'mobx';
 
+import { notification, message, Modal } from 'antd';
+
 // tools
 import ls from "localforage";
 import utils from '../tools/utils.js';
@@ -11,7 +13,7 @@ class TaskStore {
             driver: ls.INDEXEDDB,
             name: 'task-time-manage',
             version: 1.0,
-            storeName: 'taskDB', 
+            storeName: 'taskDB',
             description: '任务时间管理'
         });
 
@@ -22,6 +24,8 @@ class TaskStore {
 
                     this.items.push(...data)
 
+                    this.projects = _.uniqBy(this.items, 'projectName');
+
                 }
 
                 setTimeout(() => {
@@ -29,6 +33,8 @@ class TaskStore {
                 }, 1500);
 
             });
+
+
     }
 
     @observable items = [];
@@ -46,12 +52,22 @@ class TaskStore {
         ls.setItem('taskDB', this.items.$mobx.values)
             .then((data) => {
                 this.panel = false;
+                notification['success']({
+                    message: '成功',
+                    description: '任务添加成功',
+                });
+
+                this.projects = _.uniqBy(this.items, 'projectName');
+
                 setTimeout(() => {
                     this.resetState();
                 }, 1500);
 
             }, () => {
-                console.info('添加任务失败,请重新添加.');
+                notification['error']({
+                    message: '添加失败',
+                    description: '添加任务失败,请重新尝试添加.',
+                });
             });
 
     }
@@ -65,12 +81,18 @@ class TaskStore {
         ls.setItem('taskDB', this.items.$mobx.values)
             .then((data) => {
                 this.panel = false;
+                notification['success']({
+                    message: '成功',
+                    description: '任务更新成功',
+                });
                 setTimeout(() => {
                     this.resetState();
-                    console.info('任务更新成功');
                 }, 1500);
             }, () => {
-                console.info('更新失败,请重新更新.');
+                notification['error']({
+                    message: '更新失败',
+                    description: '更新任务失败,请重新尝试更新.',
+                });
             });
 
     }
@@ -78,15 +100,17 @@ class TaskStore {
     @observable delete(task) {
         let index = _.findIndex(this.items, { id: task.id });
 
-        // this.items.unshift(_.assign([0], task));
         this.items.splice(index, 1);
 
         ls.setItem('taskDB', this.items.$mobx.values)
             .then((data) => {
                 this.panel = false;
+                notification['success']({
+                    message: '成功',
+                    description: '任务删除成功',
+                });
                 setTimeout(() => {
                     this.resetState();
-                    console.info('删除成功');
                 }, 1500);
             }, () => {
                 console.info('删除失败,请重新删除.');
@@ -98,7 +122,8 @@ class TaskStore {
     @observable panel = false;
 
     // 1 新任务, 2 旧任务
-    @observable type = 1;
+    @observable
+    continue = false;
 
     // 0 筛选任务 1 添加已知任务  2 添加新任务 3 修改任务
     @observable steps = 0;
@@ -106,20 +131,29 @@ class TaskStore {
     // 默认任务未开始 0 未开始 1 进行中 2 已完成
     @observable state = 0;
 
+    // 项目名称
+    @observable projects = [];
+
+    // 任务类型 1 任务 2 缺陷
+    @observable type = 0;
+
     // 选中某一个任务用于修改或更新
     @observable selected = null;
+
+    @observable projectName = '';
 
     // loading状态
     @observable loading = true;
 
     // 恢复默认状态
     @action resetState() {
-        this.type = 1;
+        this.continue = false;
         this.steps = 0;
         this.findName = '';
+        this.projectName = '';
         this.state = 0;
         this.selected = null;
-        // this.panel = false;
+        this.type = 0;
     }
 
     // 查找任务过滤条件
@@ -127,7 +161,7 @@ class TaskStore {
 
     // 返回查找
     @computed get find() {
-        return this.items.filter((item,index) => {
+        return this.items.filter((item, index) => {
             return this.findName && item.title.indexOf(this.findName) != -1;
         });
 

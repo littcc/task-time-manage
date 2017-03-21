@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classNames';
+import { Switch, Icon, Steps, Select, Input, Button, message, Modal ,Spin} from 'antd';
+// import { Steps } from 'antd';
+const Step = Steps.Step;
+const Option = Select.Option;
 
 // animate
 // import { TweenOneGroup } from 'rc-tween-one';
@@ -60,13 +64,14 @@ let task = new TaskStore();
             'active': task.loading
         });
 
+        // <div className="ball-beat">
+        //     <div></div>
+        //     <div></div>
+        //     <div></div>
+        // </div>
         return (
             <div className={loadingClass}>
-                <div className="ball-beat">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
+                <Spin size="large" />
             </div>
         );
     }
@@ -82,7 +87,8 @@ let task = new TaskStore();
 
     render() {
         return (
-            <button className="task-add-task" type="button" onClick={this.addTaskHandle}></button>
+            // <button className="task-add-task" type="button" ></button>
+            <Button type="primary" className="task-add-task" icon="plus-circle-o" onClick={this.addTaskHandle}>开始任务</Button>
         );
     }
 
@@ -104,6 +110,14 @@ let task = new TaskStore();
         this.addTask = this.addTask.bind(this);
         this.updateTask = this.updateTask.bind(this);
         this.timeChange = this.timeChange.bind(this);
+        this.changeProjectName = this.changeProjectName.bind(this);
+        this.changeTaskType = this.changeTaskType.bind(this);
+        // this.state = {
+        //     projectName: '',
+        //     type: false,
+        //     current: 0,
+        //     projects: task.projects
+        // }
 
     }
 
@@ -112,7 +126,7 @@ let task = new TaskStore();
             list, className, panel, state,
             btnClassName = classNames({
                 'task-next': true,
-                'task-continue': task.type === 2
+                'task-continue': task.continue
             }),
             randerStateClassName = classNames({
                 'task-panel-mask': true,
@@ -144,65 +158,110 @@ let task = new TaskStore();
                 </section>
         } else if (task.steps === 1) {
             let selected = task.selected;
+            // task.state = selected.state;
+
+            // console.log(task.state,selected.state)
 
             panel = <section className="task-panel-continue" onClick={this.preventDefault}>
-                        <div className="task-panel-continue-title"></div>
-                        <div className="task-panel-continue-info">
-                    <input type="text" className="task-panel-continue-info-input" placeholder="请输入本次任务用时" ref="taskThisTime"/>
-                            <input type="checkbox" className="task-panel-continue-info-state" ref="taskState"/>
-                        </div>
-                        <div className="task-panel-continue-submit">
-                            <button className="task-panel-cancel" onClick={this.cancelAddTask.bind(this)}></button>
-                            <button className="task-panel-enter" onClick={this.updateTask.bind(this)}></button>
-                        </div>
-                </section>
-        } else if (task.steps === 2) {
-            if (task.state > 0) {
-                state = <input type="checkbox" className="task-panel-continue-info-state" ref="taskState" defaultChecked={task.state === 2}/>
-            }
-            panel = <section className="task-panel-continue" onClick={this.preventDefault}>
-                        <div className="task-panel-continue-title"></div>
-                        <div className="task-panel-continue-info">
-                            <input type="text" className="task-panel-continue-info-input" placeholder="预估用时" ref="taskEstimateTime" onChange={this.timeChange}/>
-                            <input type="checkbox" className="task-panel-continue-info-state task-panel-continue-info-type" ref="taskType"/>
-                        </div>
-                        <div className="task-panel-continue-info">
-                            <input type="text" className="task-panel-continue-info-input" placeholder="本次用时" ref="taskThisTime" onChange={this.timeChange}/>
-                            {state}
-                            <input type="text" className="task-panel-continue-info-input" placeholder="所属项目" ref="taskProjectName"/>
-                        </div>
-                        <div className="task-panel-continue-info">
-                            <input type="text" className="task-panel-continue-info-input" placeholder="备注" ref="taskRemarks"/>
-                        </div>
-                        <div className="task-panel-continue-submit">
-                            <button className="task-panel-cancel" onClick={this.cancelAddTask.bind(this)}></button>
-                            <button className="task-panel-enter" onClick={this.addTask.bind(this)}></button>
-                        </div>
-                </section>
-        } else if (task.steps === 3) {
-            let selected = task.selected;
-            // chancked = {  }
-            if (task.state > 0) {
-                state = <input type="checkbox" className="task-panel-continue-info-state" ref="taskState" defaultChecked={task.state === 2} />
-            }
-            panel = <section className="task-panel-continue" onClick={this.preventDefault}>
-                <div className="task-panel-continue-title"></div>
                 <div className="task-panel-continue-info">
-                    <input type="text" className="task-panel-continue-info-input" placeholder="预估用时" ref="taskEstimateTime" defaultValue={utils.timeFormatTranslate.sToh(selected.estimateTime)} onChange={this.timeChange} />
-                    <input type="checkbox" className="task-panel-continue-info-state task-panel-continue-info-type" ref="taskType" defaultChecked={selected.type === 2}/>
-                    
+                    <Input type="text" placeholder={"预计用时" + utils.timeFormatTranslate.sToh(selected.estimateTime)} size="large" disabled/>
+                    <Input type="text" placeholder={"实际用时" + utils.timeFormatTranslate.sToh(selected.actualTime)} size="large" disabled/>
                 </div>
                 <div className="task-panel-continue-info">
-                    <input type="text" className="task-panel-continue-info-input" placeholder="实际用时" ref="taskThisTime" defaultValue={utils.timeFormatTranslate.sToh(selected.actualTime)} onChange={this.timeChange}/>
-                    {state}
-                    <input type="text" className="task-panel-continue-info-input" placeholder="所属项目" ref="taskProjectName" defaultValue={selected.projectName}/>
+                    <Input type="text" placeholder="本次用时 ( 输入的时间会累加到实际用时 )" ref="taskThisTime" size="large"/>
                 </div>
-                <div className="task-panel-continue-info">
-                    <input type="text" className="task-panel-continue-info-input" placeholder="备注" ref="taskRemarks" defaultValue={selected.remarks}/>
+                <div className="task-panel-continue-title">
+                    <span>请选择任务状态</span>
+                    <Steps size="small" current={selected.state} direction="horizontal">
+                        <Step title="未开始" onClick={this.changeTaskState.bind(this, 0, selected)} />
+                        <Step title="进行中" onClick={this.changeTaskState.bind(this, 1, selected)} />
+                        <Step title="已完成" onClick={this.changeTaskState.bind(this, 2, selected)} />
+                    </Steps>
                 </div>
                 <div className="task-panel-continue-submit">
-                    <button className="task-panel-cancel" onClick={this.cancelChangeTask.bind(this)}></button>
-                    <button className="task-panel-enter" onClick={this.changeTask.bind(this)}></button>
+                    <Button onClick={this.cancelAddTask.bind(this)} size="small">取消</Button>
+                    <Button type="primary" onClick={this.updateTask} size="small">确认</Button>
+                </div>
+            </section>
+        } else if (task.steps === 2) {
+            const options = task.projects.map(item => <Option key={item.id} value={item.projectName}>{item.projectName}</Option>);
+
+            panel = <section className="task-panel-continue" onClick={this.preventDefault}>
+                        <div className="task-panel-continue-info">
+                            <Input type="text" placeholder="预估用时" ref="taskEstimateTime" size="large" onChange={this.timeChange} />
+                            <Switch checkedChildren={'修复缺陷'} unCheckedChildren={'开发任务'} onChange={this.changeTaskType}/>
+                        </div>
+                        <div className="task-panel-continue-info">
+                            <Input type="text" placeholder="本次用时" ref="taskThisTime" size="large" onChange={this.timeChange} />
+                            <Select
+                                combobox
+                                placeholder="所属项目名称"
+                                size="large"
+                                style={{ width: '50%' }}
+                                allowClear
+                                notFoundContent=""
+                                defaultActiveFirstOption={false}
+                                onChange={this.changeProjectName}
+                            >
+                                {options}
+                            </Select>
+                        </div>
+                        <div className="task-panel-continue-title">
+                            <span>请选择任务状态</span>
+                            <Steps size="small" current={task.state} direction="horizontal">
+                                <Step title="未开始" onClick={this.changeTaskState.bind(this, 0)} />
+                                <Step title="进行中" onClick={this.changeTaskState.bind(this, 1)} />
+                                <Step title="已完成" onClick={this.changeTaskState.bind(this, 2)} />
+                            </Steps>
+                        </div>
+                        <div className="task-panel-continue-info">
+                            <Input type="text" placeholder="备注" ref="taskThisTime" size="large" ref="taskRemarks"/>
+                        </div>
+                        <div className="task-panel-continue-submit">
+                            <Button onClick={this.cancelAddTask.bind(this)} size="small">取消</Button>
+                            <Button type="primary" onClick={this.addTask.bind(this)} size="small">确认</Button>
+                        </div>
+                    </section>
+        } else if (task.steps === 3) {
+            let selected = task.selected;
+
+            const options = task.projects.map(item => <Option key={item.id} value={item.projectName}>{item.projectName}</Option>);
+
+            panel = <section className="task-panel-continue" onClick={this.preventDefault}>
+                <div className="task-panel-continue-info">
+                    <Input type="text" placeholder="预估用时" ref="taskEstimateTime" size="large" onChange={this.timeChange} defaultValue={utils.timeFormatTranslate.sToh(selected.estimateTime)}/>
+                    <Switch checkedChildren={'修复缺陷'} unCheckedChildren={'开发任务'} ref="taskType" defaultChecked={selected.type === 2} onChange={this.changeTaskType} />
+                </div>
+                <div className="task-panel-continue-info">
+                    <Input type="text" placeholder="实际用时" ref="taskThisTime" size="large" onChange={this.timeChange} defaultValue={utils.timeFormatTranslate.sToh(selected.actualTime)}/>
+                    <Select
+                        combobox
+                        placeholder="所属项目名称"
+                        size="large"
+                        style={{ width: '50%' }}
+                        allowClear
+                        notFoundContent=""
+                        defaultValue={selected.projectName}
+                        defaultActiveFirstOption={false}
+                        onChange={this.changeProjectName}
+                    >
+                        {options}
+                    </Select>
+                </div>
+                <div className="task-panel-continue-title">
+                    <span>请选择任务状态</span>
+                    <Steps size="small" current={selected.state} direction="horizontal">
+                        <Step title="未开始" onClick={this.changeTaskState.bind(this, 0, selected)} />
+                        <Step title="进行中" onClick={this.changeTaskState.bind(this, 1, selected)} />
+                        <Step title="已完成" onClick={this.changeTaskState.bind(this, 2, selected)} />
+                    </Steps>
+                </div>
+                <div className="task-panel-continue-info">
+                    <Input type="text" placeholder="备注" size="large" ref="taskRemarks" defaultValue={selected.remarks}/>
+                </div>
+                <div className="task-panel-continue-submit">
+                    <Button onClick={this.cancelChangeTask.bind(this)} size="small">取消</Button>
+                    <Button type="primary" onClick={this.changeTask.bind(this)} size="small">确认</Button>
                 </div>
             </section>
         }
@@ -224,7 +283,7 @@ let task = new TaskStore();
         this.preventDefault(event);
 
         if (task.steps !== 0) {
-            this.selected = null;
+            task.selected = null;
             task.resetState();
             return false;
         }
@@ -235,8 +294,8 @@ let task = new TaskStore();
 
     selectTaskItem(item) {
         this.refs.taskName.value = task.findName = item.title;
-        this.selected = item;
-        task.type = 2;
+        task.selected = item;
+        task.continue = true;
 
     }
 
@@ -246,15 +305,24 @@ let task = new TaskStore();
         }
 
         if (task.findName === '') {
-            alert('请填写正确的任务名称.');
+            message.error('请输入正确的任务名称')
             return false;
         }
 
-        if (!this.selected) {
-            let enter = confirm('确认添加一条新任务? 否则请选择一项已存在的任务.');
-            if (enter) {
-                task.steps = 2;
-            }
+        if (!task.selected) {
+
+            Modal.confirm({
+                title: '警告',
+                content: '确认添加一条新任务? 否则请选择一项已存在的任务',
+                okText: '确认',
+                cancelText: '取消',
+                onOk: function() {
+                    task.steps = 2;
+                },
+                onCancel: function() {
+
+                }
+            });
         } else {
             task.steps = 1;
         }
@@ -263,35 +331,41 @@ let task = new TaskStore();
 
     updateTask() {
 
-        if (!utils.isTime(this.refs.taskThisTime.value)) {
-            alert('预计用时 格式错误');
+        if (!utils.isTime(this.refs.taskThisTime.refs.input.value)) {
+            message.error('请输入正确的本次任务使用时间');
             return false;
         }
 
         let params = {};
-        params.id = this.selected.id;
-        params.actualTime = utils.timeFormatTranslate.hTos(this.refs.taskThisTime.value.trim()) + this.selected.actualTime;
-        params.state = 1;
-        params.timeout = params.actualTime - this.selected.estimateTime;
-        if (this.refs.taskState.checked) {
-            params.state = 2;
-        }
-        console.log(params);
+        params.id = task.selected.id;
+        params.actualTime = utils.timeFormatTranslate.hTos(this.refs.taskThisTime.refs.input.value.trim()) + task.selected.actualTime;
+        params.state = task.selected.state;
+        params.timeout = params.actualTime - task.selected.estimateTime;
 
         task.update(params);
 
     }
 
     timeChange(e) {
-        if (utils.timeFormatTranslate.hTos(this.refs.taskThisTime.value.trim()) === 0 || utils.timeFormatTranslate.hTos(this.refs.taskEstimateTime.value.trim()) === 0) {
+        if (utils.timeFormatTranslate.hTos(this.refs.taskThisTime.refs.input.value.trim()) === 0 || utils.timeFormatTranslate.hTos(this.refs.taskEstimateTime.refs.input.value.trim()) === 0) {
+            // task.state = 0;
+            // this.setState({
+            // current: 0
+            // });
             task.state = 0;
             return false;
         }
 
-        if (utils.timeFormatTranslate.hTos(this.refs.taskThisTime.value.trim()) >= utils.timeFormatTranslate.hTos(this.refs.taskEstimateTime.value.trim())) {
+        if (utils.timeFormatTranslate.hTos(this.refs.taskThisTime.refs.input.value.trim()) >= utils.timeFormatTranslate.hTos(this.refs.taskEstimateTime.refs.input.value.trim())) {
             task.state = 2;
+            // this.setState({
+            //     current: 2
+            // });
         } else {
             task.state = 1;
+            // this.setState({
+            //     current: 1
+            // });
         }
 
     }
@@ -304,64 +378,85 @@ let task = new TaskStore();
     }
 
     changeTask() {
-        if (this.refs.taskEstimateTime.value === '0' || !utils.isTime(this.refs.taskEstimateTime.value) || !this.refs.taskProjectName.value.trim()) {
-            alert('预计用时&所属项目 - 格式错误');
+        if (!this.refs.taskEstimateTime.refs.input.value || !utils.isTime(this.refs.taskEstimateTime.refs.input.value)) {
+            message.error('请输入正确的任务预估时间');
+            return false;
+        }
+        if (!task.selected.projectName) {
+            message.error('请输入或选择正确的项目名称');
             return false;
         }
 
         let params = _.assign({}, task.selected);
 
-        // params.title = item.title;
-        params.estimateTime = utils.timeFormatTranslate.hTos(this.refs.taskEstimateTime.value.trim());
-        params.actualTime = utils.timeFormatTranslate.hTos(this.refs.taskThisTime.value.trim());
-        params.type = !this.refs.taskType.checked ? 1 : 2;
-        params.state = params.actualTime == 0 ? 0 : this.refs.taskState.checked ? 2 : 1;
-        params.projectName = this.refs.taskProjectName.value.trim();
-        params.remarks = this.refs.taskRemarks.value.trim();
+        params.estimateTime = utils.timeFormatTranslate.hTos(this.refs.taskEstimateTime.refs.input.value.trim());
+        params.actualTime = utils.timeFormatTranslate.hTos(this.refs.taskThisTime.refs.input.value.trim());
+        params.type = task.type || task.selected.type;
+        params.state = task.selected.state;
+        params.projectName = task.projectName.trim() || task.selected.projectName;
+        params.remarks = this.refs.taskRemarks.refs.input.value.trim();
         params.timeout = params.actualTime - params.estimateTime;
 
-        console.log(params)
         task.update(params);
 
     }
 
+    changeProjectName(value) {
+        task.projectName = value;
+
+    }
+
+    changeTaskType(value) {
+        task.type = !value ? 1 : 2;
+
+    }
+
+    changeTaskState(value, selected) {
+        if (selected) {
+            if (selected.actualTime > 0 && value === 0) return false;
+            selected.state = value;
+        } else {
+            task.state = value;
+        }
+
+    }
+
     addTask() {
-        if (this.refs.taskEstimateTime.value === '0' || !utils.isTime(this.refs.taskEstimateTime.value) || !this.refs.taskProjectName.value.trim()) {
-            alert('预计用时&所属项目 - 格式错误');
+
+        if (!this.refs.taskEstimateTime.refs.input.value || !utils.isTime(this.refs.taskEstimateTime.refs.input.value)) {
+            message.error('请输入正确的任务预估时间');
             return false;
         }
+        if (!task.projectName || task.projectName.trim() === "") {
+            message.error('请输入或选择正确的项目名称');
+            return false;
+        }
+
 
         let params = {};
 
         params.title = task.findName;
-        params.estimateTime = utils.timeFormatTranslate.hTos(this.refs.taskEstimateTime.value.trim());
-        params.actualTime = utils.timeFormatTranslate.hTos(this.refs.taskThisTime.value.trim());
-        params.type = !this.refs.taskType.checked ? 1 : 2;
-        // params.state = params.actualTime == 0 ? 0 : 1;
-        params.state = params.actualTime == 0 ? 0 : this.refs.taskState.checked ? 2 : 1;
-        params.projectName = this.refs.taskProjectName.value.trim();
-        params.remarks = this.refs.taskRemarks.value.trim();
+        params.estimateTime = utils.timeFormatTranslate.hTos(this.refs.taskEstimateTime.refs.input.value.trim());
+        params.actualTime = utils.timeFormatTranslate.hTos(this.refs.taskThisTime.refs.input.value.trim());
+        params.type = task.type === 0 ? 1 : task.type;
+        params.state = task.state;
+        params.projectName = task.projectName.trim();
+        params.remarks = this.refs.taskRemarks.refs.input.value.trim();
         params.timeout = params.actualTime - params.estimateTime;
-
-        // if (task.state === 1 && this.refs.taskState.checked) {
-        //     params.state = 2;
-        // }
-
-        // console.log(params);
 
         task.add(params);
 
     }
 
     cancelAddTask() {
-        this.selected = null;
+        task.selected = null;
         task.resetState();
 
     }
 
     findTask(event) {
-        this.selected = null;
-        task.type = 1;
+        task.selected = null;
+        task.continue = false;
         task.findName = event.target.value.trim();
 
     }
@@ -431,7 +526,7 @@ let task = new TaskStore();
     render() {
         return (
             <li className="task-main-table-content-item">
-                <ul className="item-ul"><li className="item-li">没有发现相关的任务哟,赶紧开始添加吧!</li></ul>
+                <ul className="item-ul"><li className="item-li-not"><Icon type="question-circle-o" />没有发现相关的任务哟,赶紧开始添加吧!</li></ul>
             </li>
         )
     }
@@ -474,16 +569,25 @@ let task = new TaskStore();
 
     delete(item, e) {
 
-        let enter = confirm('确认删除该任务?');
+        Modal.confirm({
+            title: '警告',
+            content: '确认删除该任务?',
+            okText: '确认',
+            cancelText: '取消',
+            onOk: function() {
+                task.delete(item);
+            },
+            onCancel: function() {
 
-        if (enter) {
-            task.delete(item);
-        }
+            }
+        });
+
+        // if (enter) {}
 
     }
 
     view(e) {
-        console.log('该事件还在整理中');
+        message.warn('该事件还在整理中,稍后开放')
     }
 
     change(item, e) {
@@ -491,7 +595,7 @@ let task = new TaskStore();
         task.panel = true;
         task.steps = 3;
         task.state = item.state;
-        console.log(task.selected)
+
 
     }
 

@@ -20,7 +20,10 @@ html {
     display: flex;
     flex-direction: column;
     // padding: 50px 0;
-    background: $blue;
+    // 第一套设计方案    
+    // background: $blue;
+    // 第二套设计方案
+    background: $light;
     >div {
         padding: 50px 0;
         min-height: 100vh;
@@ -38,7 +41,10 @@ html {
         width: $width;
         height: 44px;
         line-height: 44px;
-        color: $light;
+        // 第一套设计方案
+        // color: $light;
+        // 第二套设计方案
+        color: rgba(0, 0, 0, 0.5);
         font-size: 20px;
         .ver {
             margin-left: 5px;
@@ -53,20 +59,28 @@ html {
     height: 100px;
 }
 
+// 第一套设计方案
+// .task-add-task {
+//     position: absolute;
+//     right: 0;
+//     top: -10px;
+//     width: 80px;
+//     line-height: 3;
+//     border-radius: 2px;
+//     font-weight: bold;
+//     transform: translate(0, -100%);
+//     @extend %green-button;
+//     box-shadow: 0 0 3px 0px rgba(6, 74, 169, 0.5);
+//     &:after {
+//         content: '添加任务';
+//     }
+// }
+// 第二套设计方案
 .task-add-task {
     position: absolute;
     right: 0;
     top: -10px;
-    width: 80px;
-    line-height: 3;
-    border-radius: 2px;
-    font-weight: bold;
     transform: translate(0, -100%);
-    @extend %green-button;
-    box-shadow: 0 0 3px 0px rgba(6, 74, 169, 0.5);
-    &:after {
-        content: '添加任务';
-    }
 }
 
 .table-main {
@@ -77,7 +91,10 @@ html {
     width: $width;
     border-radius: 5px;
     background: #FFF;
-    box-shadow: 0 0 5px 0px rgba(6, 74, 169, 0.5);
+    // 第一套设计方案
+    // box-shadow: 0 0 5px 0px rgba(6, 74, 169, 0.5);
+    // 第二套设计方案
+    box-shadow: 0 0 0 0px rgba(6, 74, 169, 0.5);
 }
 
 %listItem {
@@ -141,7 +158,10 @@ html {
         justify-content: flex-end;
         padding: 0 10px;
         opacity: 0;
-        background: rgba(91, 150, 179, 0.5);
+        // 第一套设计方案
+        // background: rgba(91, 150, 179, 0.5);
+        // 第二套设计方案
+        background: rgba(0, 0, 0, 0.4);
         box-shadow: 0px -10px 20px 0px rgba(121, 121, 121, 0.25) inset;
         z-index: -1;
         transition: all 0.3s cubic-bezier(0.39, 0.58, 0.57, 1);
@@ -201,6 +221,17 @@ html {
             border-color: $green;
         }
     }
+    .item-li-not {
+        position: relative;
+        flex: 1;
+        list-style: none;
+        text-align: center;
+        color: #c7c7c7;
+        line-height: $line-height;
+        .anticon-question-circle-o {
+            margin-right: 5px;
+        }
+    }
     .item-bug {
         >.item-ul {
             background: #f3faff;
@@ -239,7 +270,10 @@ html {
     justify-content: center;
     width: 100vw;
     height: 100vh;
-    background: $blue;
+    // 第一套设计方案
+    // background: $blue;
+    // 第二套设计方案
+    background: $light;    
     z-index: -1;
     opacity: 0;
     transition: opacity .3s ease-in;
@@ -260,7 +294,7 @@ html {
     .task-footer-wrap {
         >a {
             display: inline-block;
-            color: $light;
+            color: $blue;
             text-decoration: none;
         }
         margin: 0 auto;
@@ -420,16 +454,82 @@ html {
     border-radius: 5px;
     box-shadow: 0 0 5px 0px rgba(6, 74, 169, 0.5);
     .task-panel-continue-title {
-        width: 100%;
-        padding: 0 50px;
-        line-height: 40px;
-        margin-bottom: 20px;
-        @extend %text-overflow;
+        // width: 75%;
+        // padding: 0 50px;
+        // line-height: 40px;
+        // margin-bottom: 20px;
+        // @extend %text-overflow;
+        width: 75%;
+        margin-bottom: 10px;
+        // padding-bottom: 10px;
+        padding: 10px 5px;
+        >span {
+            display: none;
+            font-weight: bold;
+            line-height: 32px;
+            padding-bottom: 5px;
+        }
+    }
+    .ant-steps {
+        cursor: pointer;
+        //     .ant-steps-item {
+        //         &:nth-child(1) {
+        //             .ant-steps-head-inner {
+        //                 border-color: $bug-color;
+        //                 background-color: $bug-color;
+        //             }
+        //         }
+        //     }
+    }
+    .ant-steps-status-process {
+        .ant-steps-title {
+            font-weight: bold!important;
+        }
+    }
+    .ant-steps-title {
+        font-weight: 400!important;
     }
     .task-panel-continue-info {
         display: flex;
         margin-bottom: 10px;
         width: 75%;
+        >input {
+            flex: 1;
+            text-align: center;
+            &:nth-child(1) {
+                &~* {
+                    margin-left: 10px;
+                }
+            }
+        }
+        .ant-steps {
+            padding-bottom: 5px;
+        }
+        .ant-switch {
+            flex: none;
+            width: 50%;
+            height: 32px;
+            line-height: 30px;
+            border-color: $green;
+            background-color: $green;
+            &:after {
+                width: 28px;
+                height: 28px;
+            }
+        }
+        .ant-switch-inner {
+            margin-left: 34px;
+        }
+        .ant-switch-checked {
+            border-color: $bug-color;
+            background-color: $bug-color;
+            .ant-switch-inner {
+                margin-left: 10px;
+            }
+            &:after {
+                margin-left: -29px;
+            }
+        }
     }
     .task-panel-continue-info-input {
         display: flex;
@@ -503,7 +603,7 @@ html {
         padding-top: 10px;
         >button {
             width: 100px;
-            height: 40px;
+            height: 32px;
             border-radius: 2px;
             &:nth-child(1) {
                 &~button {
