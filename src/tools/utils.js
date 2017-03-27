@@ -10,17 +10,25 @@ const Utils = {
      */
     getTimeStamp: (type) => {
         let time, day = 24 * 3600 * 1000;
-
+        // 返回上周
         if (type.week) {
 
             let today = new Date(),
                 lastWeek = (today.getDay() - 1 + 7) * day,
-                start = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime() - lastWeek;
+                lastWeekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime() - lastWeek,
+                thisWeekStart = lastWeekStart + (day * 7);
 
             time = {
-                start: start,
-                end: start + (day * 7),
+                lastWeek: {
+                    start: lastWeekStart,
+                    end: thisWeekStart,
+                },
+                thisWeek: {
+                    start: thisWeekStart,
+                    end: thisWeekStart + (day * 7),
+                }
             };
+            console.log(time);
 
         } else {
             // 逻辑未确定
@@ -34,6 +42,19 @@ const Utils = {
         }
 
         return time;
+
+    },
+    /**
+     * @param  {number} 传入一个数字 判断是否为正常数字 返回一个小数两位带%的字符串
+     */
+    proportion: (number) => {
+        number = Utils.decimalAdjust('round', number, -2);
+
+        if (_.isFinite(number)) {
+            return number + '%';
+        } else {
+            return '0%'
+        }
 
     },
     /**
@@ -53,7 +74,17 @@ const Utils = {
          * @return {[string]}     [返回小时为单位的字符串]
          */
         sToh: (seconds) => {
-            return Utils.decimalAdjust('round', seconds / Utils.hours, -2) + 'H';
+            let h = Utils.decimalAdjust('round', seconds / Utils.hours, -2);
+            return h > 0 ? h + 'H' : 0;
+
+        },
+        /**
+         * [description] 秒转时间 最小单位是小时
+         * @param  {[number]} seconds [传入一个时间为秒的单位数字]
+         * @return {[string]}     [返回一个小时单位的数字]
+         */
+        sTohToNumber: (seconds) => {
+            return Utils.decimalAdjust('round', seconds / Utils.hours, -2);
 
         },
         /**
@@ -89,7 +120,6 @@ const Utils = {
             }
 
             if (hours.indexOf('m') !== -1) {
-                // seconds = hours.split('m')[0] * Utils.minutes;
                 seconds = parseInt(hours) * Utils.minutes;
             } else {
                 seconds = hours * Utils.hours;

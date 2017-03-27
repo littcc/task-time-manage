@@ -167,6 +167,36 @@ class TaskStore {
 
     }
 
+    // 统计相关
+    @observable statistics = false;
+
+    // 本周
+    @observable statisticsThisWeek = false;
+
+    @observable filter = false;
+
+
+    @computed get list() {
+        if (this.statistics === true) {
+            return this.items.filter((item, index) => {
+                let time = utils.getTimeStamp({ week: true });
+                if (this.statisticsThisWeek) {
+                    return item.state === 2 && item.lastUpdateTime >= time.thisWeek.start && item.lastUpdateTime <= time.thisWeek.end;
+                }
+                return item.state === 2 && item.lastUpdateTime >= time.lastWeek.start && item.lastUpdateTime <= time.lastWeek.end;
+
+            });
+        } else if (this.filter === true) {
+            return this.items.filter((item, index) => {
+                return false;
+            });
+        } else {
+            return this.items;
+        }
+    };
+
+
+
 };
 
 export default TaskStore;

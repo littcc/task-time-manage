@@ -1,6 +1,7 @@
 @import '../../base/common.scss';
 html {
     height: 100vh;
+    background: $light;
     overflow-x: hidden;
 }
 
@@ -17,16 +18,13 @@ html {
 }
 
 #app-task {
-    display: flex;
-    flex-direction: column;
-    // padding: 50px 0;
-    // 第一套设计方案    
-    // background: $blue;
-    // 第二套设计方案
-    background: $light;
+    height: 100vh;
     >div {
-        padding: 50px 0;
-        min-height: 100vh;
+        padding-top: 50px;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: $light;
     }
 }
 
@@ -34,14 +32,12 @@ html {
     flex: none;
     width: 100vw;
     height: 44px;
-    text-align: center;
-    // background: $lightBlue;
+    text-align: center; // background: $lightBlue;
     .task-header-wrap {
         margin: 0 auto;
         width: $width;
         height: 44px;
-        line-height: 44px;
-        // 第一套设计方案
+        line-height: 44px; // 第一套设计方案
         // color: $light;
         // 第二套设计方案
         color: rgba(0, 0, 0, 0.5);
@@ -76,11 +72,40 @@ html {
 //     }
 // }
 // 第二套设计方案
-.task-add-task {
+.task-table-ribbon {
+    display: flex;
     position: absolute;
     right: 0;
     top: -10px;
     transform: translate(0, -100%);
+    .ant-select {
+        // &:not(:last-child) {
+        margin-right: 10px; // }
+    }
+    .last-week-hide,
+    .this-week-hide {
+        display: none;
+    }
+}
+
+.task-table-filter-panel {
+    transform: scale(0);
+    transition: transform .3s ease;
+    &.active {
+        transform: scale(1);
+        transition: transform .3s ease;
+    }
+}
+
+.task-table-filter {
+    display: flex; // margin-right: 10px;
+}
+
+.task-table-filter-button {
+    margin-right: 10px; // color: $line-color;
+    color: #3fbbf5;
+    background-color: #fff;
+    border-color: #3fbbf5;
 }
 
 .table-main {
@@ -90,8 +115,7 @@ html {
     margin-top: 100px;
     width: $width;
     border-radius: 5px;
-    background: #FFF;
-    // 第一套设计方案
+    background: #FFF; // 第一套设计方案
     // box-shadow: 0 0 5px 0px rgba(6, 74, 169, 0.5);
     // 第二套设计方案
     box-shadow: 0 0 0 0px rgba(6, 74, 169, 0.5);
@@ -131,7 +155,10 @@ html {
     }
 }
 
-// .task-main-table-content {}
+.task-main-table-content {
+    margin-bottom: 40px;
+}
+
 .task-main-table-content-item {
     &:not(:last-child) {
         border-bottom: 1px solid $border-color;
@@ -142,8 +169,8 @@ html {
         &:hover {
             .item-event-mask {
                 opacity: 1;
-                transition: all .3s cubic-bezier(.59, 0.58, 0.57, 1);
-                z-index: 2;
+                transform: scale(1);
+                transition: all .4s cubic-bezier(.59, 0.58, 0.57, 1);
             }
         }
     }
@@ -157,14 +184,12 @@ html {
         align-items: center;
         justify-content: flex-end;
         padding: 0 10px;
-        opacity: 0;
-        // 第一套设计方案
+        opacity: 0; // 第一套设计方案
         // background: rgba(91, 150, 179, 0.5);
         // 第二套设计方案
-        background: rgba(0, 0, 0, 0.4);
-        box-shadow: 0px -10px 20px 0px rgba(121, 121, 121, 0.25) inset;
-        z-index: -1;
-        transition: all 0.3s cubic-bezier(0.39, 0.58, 0.57, 1);
+        background: rgba(0, 0, 0, 0.3); // box-shadow: 0px -10px 20px 0px rgba(121, 121, 121, 0.25) inset;
+        transform: scale(.98);
+        transition: all 0.6s ease-out;
     }
     .item-event-button {
         margin: 0 10px;
@@ -189,16 +214,17 @@ html {
         &:first-child {
             text-align: left;
             padding-left: 70px;
+            letter-spacing: .05em;
             &:before {
                 content: '开发任务';
                 @extend %itemIcon;
                 background: $green;
+                letter-spacing: 0;
             }
-        }
-        &:hover {
-            background: $border-color;
-            transition: background .3s;
-        }
+        } // &:hover {
+        //     background: $border-color;
+        //     transition: background .3s;
+        // }
         &.item-li-time {
             letter-spacing: 0.07em;
         }
@@ -228,7 +254,8 @@ html {
         text-align: center;
         color: #c7c7c7;
         line-height: $line-height;
-        .anticon-question-circle-o {
+        letter-spacing: 0.05em;
+        .anticon-exclamation-circle-o {
             margin-right: 5px;
         }
     }
@@ -269,11 +296,10 @@ html {
     align-items: center;
     justify-content: center;
     width: 100vw;
-    height: 100vh;
-    // 第一套设计方案
+    height: 100vh; // 第一套设计方案
     // background: $blue;
     // 第二套设计方案
-    background: $light;    
+    background: $light;
     z-index: -1;
     opacity: 0;
     transition: opacity .3s ease-in;
@@ -285,8 +311,9 @@ html {
 }
 
 .task-footer {
-    position: fixed;
-    bottom: 0;
+    // position: fixed;
+    // bottom: 0;
+    margin-top: 20px;
     flex: none;
     width: 100vw;
     height: 44px;
@@ -348,8 +375,7 @@ html {
     width: 500px;
     height: 40px;
     border-radius: 5px;
-    background: #FFF;
-    box-shadow: 0 0 5px 0px rgba(6, 74, 169, 0.5);
+    background: #FFF; // box-shadow: 0 0 5px 0px rgba(6, 74, 169, 0.5);
     >label {
         position: relative;
         width: 100%;
@@ -379,8 +405,7 @@ html {
         margin-top: 10px;
         border-radius: 2px;
         background: $light;
-        overflow: hidden;
-        box-shadow: 0 0 5px 0px rgba(6, 74, 169, 0.5);
+        overflow: hidden; // box-shadow: 0 0 5px 0px rgba(6, 74, 169, 0.5);
     }
     .task-fliter-item {
         position: relative;
@@ -394,6 +419,7 @@ html {
             -webkit-line-clamp: 2;
             overflow: hidden;
             line-height: 1.5;
+            letter-spacing: .05em;
         }
         &:not(:last-child) {
             border-bottom: 1px solid $border-color;
@@ -460,8 +486,7 @@ html {
         // margin-bottom: 20px;
         // @extend %text-overflow;
         width: 75%;
-        margin-bottom: 10px;
-        // padding-bottom: 10px;
+        margin-bottom: 10px; // padding-bottom: 10px;
         padding: 10px 5px;
         >span {
             display: none;
@@ -471,8 +496,7 @@ html {
         }
     }
     .ant-steps {
-        cursor: pointer;
-        //     .ant-steps-item {
+        cursor: pointer; //     .ant-steps-item {
         //         &:nth-child(1) {
         //             .ant-steps-head-inner {
         //                 border-color: $bug-color;
@@ -532,8 +556,7 @@ html {
         }
     }
     .task-panel-continue-info-input {
-        display: flex;
-        // padding: 0 15px;
+        display: flex; // padding: 0 15px;
         flex: 1;
         line-height: 40px;
         font-size: 12px;
@@ -558,8 +581,7 @@ html {
     }
     .task-panel-continue-info-state {
         display: flex;
-        flex: 1;
-        // padding: 0 15px;
+        flex: 1; // padding: 0 15px;
         line-height: 40px;
         font-size: 12px;
         color: $light;
@@ -645,5 +667,27 @@ html {
         color: $blue;
         border-radius: 2px;
         background: $light-blue;
+    }
+}
+
+.task-statistics {
+    margin-bottom: 40px;
+}
+
+.task-statistics-chart {
+    margin: 40px 0;
+    .recharts-wrapper {
+        display: inline-block;
+    }
+}
+
+.ant-table-body {
+    .ant-table-thead {
+        th {
+            font-weight: 400;
+        }
+    }
+    tr {
+        text-align: center;
     }
 }
