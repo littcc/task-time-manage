@@ -13,9 +13,9 @@ const config = {
                     presets: ['es2015', 'stage-0', 'react'],
                     plugins: ['transform-decorators-legacy', 'transform-object-assign', 'transform-object-rest-spread', ['import', {
                         "libraryName": "antd",
-                        "style": true,   // or 'css'
+                        "style": true, // or 'css'
                     }]],
-            },
+                },
             }],
         }, {
             test: /\.scss$/,
@@ -32,22 +32,22 @@ const config = {
                     sourceMap: true
                 }
             }]
+        }, {
+            test: /\.less$/,
+            use: [{
+                loader: 'style-loader'
             }, {
-                test: /\.less$/,
-                use: [{
-                    loader: 'style-loader'
-                }, {
-                    loader: 'css-loader',
-                    options: {
-                        sourceMap: true
-                    }
-                }, {
-                    loader: 'less-loader',
-                    options: {
-                        sourceMap: true
-                    }
-                }]
-            }],
+                loader: 'css-loader',
+                options: {
+                    sourceMap: true
+                }
+            }, {
+                loader: 'less-loader',
+                options: {
+                    sourceMap: true
+                }
+            }]
+        }],
     },
     entry: {
         app: './app.js',
@@ -55,7 +55,7 @@ const config = {
     output: {
         path: __dirname + '/assets',
         publicPath: '/assets',
-        filename: '[name].bundle.js'        
+        filename: '[name].bundle.js'
     },
     devServer: {
         contentBase: __dirname,
@@ -65,7 +65,7 @@ const config = {
         host: '0.0.0.0',
         port: 8088,
     },
-    plugins: [new webpack.ProvidePlugin({ReactSlick: 'react-slick' })]
+    plugins: [new webpack.ProvidePlugin({ ReactSlick: 'react-slick' })]
 };
 
 module.exports = config;

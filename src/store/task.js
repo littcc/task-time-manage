@@ -30,14 +30,56 @@ class TaskStore {
 
                 setTimeout(() => {
                     this.loading = false;
-                }, 1500);
+                }, 300);
 
             });
 
+        ls.getItem('taskName')
+            .then((data) => {
+                if (data) {
+                    this.name = data;
+                }
 
+            });
     }
 
     @observable items = [];
+    @observable name = '-';
+
+    @observable setName() {
+        ls.getItem('taskName')
+            .then((name) => {
+                let result = window.prompt('请输入负责人姓名');
+                console.log(result);
+                if (!result) {
+                    message.error('负责人姓名输入有误');
+                    return false;
+                }
+
+                ls.setItem('taskName', result.trim())
+                    .then(() => {
+                        this.name = result.trim();
+                        this.items.map((item) => {
+                            item.name = this.name;
+                        });
+                        ls.setItem('taskDB', this.items.$mobx.values)
+                            .then((data) => {
+                                notification['success']({
+                                    message: '设置成功',
+                                    description: '负责人设置成功',
+                                });
+
+                            }, () => {
+                                notification['error']({
+                                    message: '设置失败',
+                                    description: '负责人设置失败',
+                                });
+                            });
+                    });
+
+            });
+
+    }
 
     @observable add(task) {
         let id, createTime;
@@ -45,6 +87,7 @@ class TaskStore {
         createTime = new Date().getTime();
         id = createTime.toString(36) + Math.random().toString(36).slice(2);
         task.id = id;
+        task.name = id;
         task.createTime = task.lastUpdateTime = createTime;
 
         this.items.unshift(task);
@@ -57,7 +100,8 @@ class TaskStore {
                     description: '任务添加成功',
                 });
 
-                this.projects = _.uniqBy(this.items, 'projectName');
+                this.projects.push(task);
+                this.projects = _.uniqBy(this.projects, 'projectName');
 
                 setTimeout(() => {
                     this.resetState();
@@ -175,6 +219,13 @@ class TaskStore {
 
     @observable filter = false;
 
+    @observable filterParams = {
+        start: undefined,
+        end: undefined,
+        projectName: undefined,
+        state: undefined,
+        type: undefined
+    };
 
     @computed get list() {
         if (this.statistics === true) {
@@ -188,13 +239,13 @@ class TaskStore {
             });
         } else if (this.filter === true) {
             return this.items.filter((item, index) => {
-                return false;
+                let state = (this.filterParams.state === undefined || this.filterParams.state === -1) ? item.state : this.filterParams.state;
+                return item.state === state && item.lastUpdateTime >= this.filterParams.start && item.lastUpdateTime <= this.filterParams.end;
             });
         } else {
             return this.items;
         }
     };
-
 
 
 };

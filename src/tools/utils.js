@@ -28,7 +28,6 @@ const Utils = {
                     end: thisWeekStart + (day * 7),
                 }
             };
-            console.log(time);
 
         } else {
             // 逻辑未确定
