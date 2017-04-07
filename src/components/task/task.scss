@@ -97,6 +97,9 @@ html {
         transform: scale(1);
         transition: transform .3s ease;
     }
+    .ant-calendar-picker {
+        width: 285px;
+    }
 }
 
 .task-table-filter {
