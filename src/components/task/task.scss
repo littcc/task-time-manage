@@ -343,7 +343,7 @@ html {
     display: flex;
     justify-content: center;
     width: 100vw;
-    height: calc(100vh - 44px);
+    height: 100vh;
     background: $blue;
     opacity: 0;
     transform: translate3d(0, -100vh, 0);

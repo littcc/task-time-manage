@@ -87,7 +87,7 @@ class TaskStore {
         createTime = new Date().getTime();
         id = createTime.toString(36) + Math.random().toString(36).slice(2);
         task.id = id;
-        task.name = id;
+        task.name = this.name;
         task.createTime = task.lastUpdateTime = createTime;
 
         this.items.unshift(task);
