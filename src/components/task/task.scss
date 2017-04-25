@@ -251,6 +251,18 @@ html {
             color: $green;
             border-color: $green;
         }
+        &.date {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.2;
+            transform: translate3d(0, 0, 0) scale(0.8);
+        }
+        .date-hms,
+        .date-ymd {
+            display: inline-block; // transform: scale(0.824);
+        }
     }
     .item-li-not {
         position: relative;
@@ -411,6 +423,14 @@ html {
         border-radius: 2px;
         background: $light;
         overflow: hidden; // box-shadow: 0 0 5px 0px rgba(6, 74, 169, 0.5);
+        .date {
+            padding-top: 5px;
+            transform: scale(0.825);
+            transform-origin: left;
+            >.ant-tag~.ant-tag {
+                margin-top: 5px;
+            }
+        }
     }
     .task-fliter-item {
         position: relative;
@@ -677,9 +697,11 @@ html {
 
 .task-statistics {
     margin-bottom: 40px;
+    user-select: text;
 }
 
 .task-statistics-chart {
+    user-select: none;
     margin: 40px 0;
     .recharts-wrapper {
         display: inline-block;

@@ -6,6 +6,14 @@ import { notification, message, Modal } from 'antd';
 import ls from "localforage";
 import utils from '../tools/utils.js';
 
+import 'whatwg-fetch';
+
+const headers = new Headers({
+    'Content-Type':'application/x-www-form-urlencoded;charset=utf-8',
+});
+
+const server = 'http://88.88.88.4:3000';
+
 class TaskStore {
 
     constructor() {
@@ -41,6 +49,18 @@ class TaskStore {
                 }
 
             });
+        // fatch('/users',)
+        // fetch(server + '/users', {
+        //         method: 'GET',
+        //         headers: headers
+        //     })
+        //     .then(function(response) {
+        //         console.log(response);
+        //         return response.text()
+        //     }).then(function(body) {
+        //         // document.body.innerHTML = body
+        //     });
+
     }
 
     @observable items = [];

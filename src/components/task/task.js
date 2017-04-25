@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { observer } from 'mobx-react';
 import classNames from 'classNames';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as Tooltips, Legend, ReferenceLine } from 'Recharts';
 import { Switch, Icon, Steps, Select, Input, Button, message, Modal, Spin, Tooltip, Table, DatePicker, Tag } from 'antd';
+
+import moment from 'moment';
+moment.locale('zh-cn');
 
 const { MonthPicker, RangePicker } = DatePicker;
 // import { Steps } from 'antd';
@@ -34,7 +38,7 @@ let task = new TaskStore();
             <header className="task-header">
                 <hgroup className="task-header-wrap">
                     <span className="title">任务时间管理</span>
-                    <span className="ver">alpha</span>
+                    <span className="ver">0.0.1</span>
                 </hgroup>
             </header>
         )
@@ -163,7 +167,8 @@ let task = new TaskStore();
 
     addTaskHandle() {
         task.panel = true;
-
+        console.log(TaskPanel)
+        // ReactDOM.findDOMNode()
     }
 
     filterPanel() {
@@ -210,6 +215,14 @@ let task = new TaskStore();
 
     }
 
+    // componentDidMount() {
+    //     console.log('componentDidMount');
+    // }
+    // componentDidUpdate() {
+    //     console.log('componentDidUpdate');
+    // }
+
+
     render() {
         let filterList = task.find,
             list, className, panel, state,
@@ -230,6 +243,7 @@ let task = new TaskStore();
                 });
                 return <li className={itemClass} key={item.id} onClick={this.selectTaskItem.bind(this,item)}>
                             <span>{item.title}</span>
+                            <div className="date"><Tag>创建时间: {moment(item.createTime).format('llll')}</Tag><Tag>最后更新时间: {moment(item.lastUpdateTime).format('llll')}</Tag></div>
                        </li>
 
             });
@@ -957,6 +971,8 @@ let task = new TaskStore();
                 <li>超时</li>
                 <li>状态</li>
                 <li>项目</li>
+                <li>创建时间</li>
+                <li>最后修改时间</li>
             </ul>
         );
 
@@ -965,11 +981,6 @@ let task = new TaskStore();
 }
 
 @observer class TaskTableContent extends Component {
-
-    // constructor(arg) {
-    //     super(...arg);
-    //     this.animation = { left: '20%', yoyo: true, repeat: -1, duration: 1000 };
-    // }
 
     render() {
         let items;
@@ -982,9 +993,7 @@ let task = new TaskStore();
         }
         return (
             <ul className="task-main-table-content">
-                <QueueAnim delay={300}>
-                    {items}
-                </QueueAnim>
+                {items}
             </ul>
         );
     }
@@ -1028,6 +1037,8 @@ let task = new TaskStore();
                     <span className={taskState}>{TaskConst.state[item.state]}</span>
                 </li>
                 <li className="item-li">{item.projectName}</li>
+                <li className="item-li date"><span className="date-ymd">{moment(item.createTime).format('llll').split('星期')[0]}</span><span className="date-hms">{'星期' + moment(item.createTime).format('llll').split('星期')[1]}</span></li>
+                <li className="item-li date"><span className="date-ymd">{moment(item.lastUpdateTime).format('llll').split('星期')[0]}</span><span className="date-hms">{'星期' + moment(item.lastUpdateTime).format('llll').split('星期')[1]}</span></li>
                 <li className="item-event-mask">
                     <button className="item-event-button view-button" onClick={this.view.bind(event)}>查看</button>
                     <button className="item-event-button change-button" onClick={this.change.bind(event, item)}>修改</button>
