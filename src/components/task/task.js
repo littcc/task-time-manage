@@ -9,7 +9,7 @@ import moment from 'moment';
 moment.locale('zh-cn');
 
 const { MonthPicker, RangePicker } = DatePicker;
-// import { Steps } from 'antd';
+
 const Step = Steps.Step;
 const Option = Select.Option;
 
