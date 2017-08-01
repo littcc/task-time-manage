@@ -12,17 +12,10 @@
 
 ## 安装
 ---
-[点击下载](http://gitlab.product.co-mall:10080/Littcc/task-time-manage/repository/archive.zip?ref=master)
-
-&
-
-
-    git clone http://gitlab.product.co-mall:10080/Littcc/task-time-manage.git
-
 `npm start` 安装构建所需要的包.
 `npm run server` 启动本地服务器环境.
 `webpack -p` 编译文件.
 
 ## 最后
 ---
-    欢迎大家使用这个工具来记录任务,这样才能贡献更多的意见,才能将它做的更丰富.
+    欢迎大家使用并贡献更多的意见
